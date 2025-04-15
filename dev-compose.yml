@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:5.7 # Compatible with older applications, suitable for older systems, lower memory requirements
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - internal_network
+
+  emqx:
+    image: emqx/emqx:latest
+    container_name: emqx
+    restart: always
+    ports:
+      - '1883:1883' # MQTT
+      - '8883:8883' # MQTT over TLS
+      - '8083:8083' # WebSocket
+      - '8084:8084' # WSS
+      - '18083:18083' # Dashboard, first-login account is admin/public
+    volumes:
+      - ./emqx/data:/opt/emqx/data
+      - ./emqx/log:/opt/emqx/log
+    networks:
+      - internal_network
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - internal_network
+
+networks:
+  internal_network:
+    driver: bridge

@@ -1,0 +1,54 @@
+{
+  "name": "my-fastify-app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This project was bootstrapped with Fastify-CLI.",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "node --test",
+    "build:env": "node scripts/build_env_rd_web.js",
+    "start": "npm run build:env && node server.js",
+    "dev": "npm run build:env && node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^6.0.0",
+    "@fastify/jwt": "^9.0.4",
+    "@fastify/multipart": "^9.0.3",
+    "@fastify/oauth2": "^8.1.2",
+    "@fastify/redis": "^7.0.2",
+    "@fastify/sensible": "^6.0.0",
+    "@fastify/static": "^8.1.1",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.2",
+    "accesscontrol": "^2.2.1",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "fastify": "^5.0.0",
+    "fastify-cli": "^7.3.0",
+    "fastify-plugin": "^5.0.0",
+    "mqtt": "^5.10.3",
+    "mysql2": "^3.12.0",
+    "nodemailer": "^6.9.16",
+    "sequelize": "^6.37.5",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.2",
+    "supertest": "^7.0.0"
+  }
+}

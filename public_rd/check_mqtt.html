@@ -1,0 +1,316 @@
+<script src="env.js"></script>
+
+<!doctype html>
+<html>
+  <head>
+    <title>PLANET CloudViewer APP</title>
+    <meta charset="UTF-8" />
+    <style>
+      .config_st {
+        width: 100%;
+        height: 200px;
+      }
+      .stats_st {
+        width: 100%;
+        height: 200px;
+      }
+      .device-table {
+        width: 100%;
+        border: 3px solid #ccc;
+        border-collapse: collapse;
+      }
+
+      .device-table td,
+      .device-table th {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+    </style>
+
+    <script src="jquery-3.4.1.min.js"></script>
+    <script src="jsrender.min.js"></script>
+    <script src="eventsource.min.js"></script>
+    <script>
+      if (typeof EventSource !== 'undefined') {
+        console.log('OK')
+      } else {
+        console.log('Sorry, your browser does not support server-sent events...')
+      }
+    </script>
+
+    <script id="DeviceTemplate" type="text/x-jsrender">
+      <tr>
+      <td width=40px>Index</td><td width=300px>Information</td><td width=800px>Config</td><td>Stats</td>
+      </tr>
+
+      {{for}}
+        <tr>
+          <td>{{:#index+1}}</td>
+          <td>
+            <label>description:{{:description}}</label><br>
+            <label>deviceID:{{:client_id}}</label><br>
+            <label>fwver:{{:fwver}}</label><br>
+            <label>api:{{:api}}</label><br>
+            <label>macaddr:{{:macaddr}}</label><br>
+            <label>modelname:{{:modelname}}</label><br>
+            <label>type:{{:type}}</label><br>
+            <label>locationID:{{:locationID}}</label><br>
+            <label>userId_DV:{{:userId_DV}}</label><br>
+          </td>
+          <td>
+            <input type="button" class="setCloudConfigButton" value="Set Cloud Config" data-sid="{{:client_id}}">
+            <!-- <input type="button" class="getWirelessConfigButton" value="Get Wireless Config Support" data-sid="{{:client_id}}"> -->
+            <br>
+            <label id="config_up_{{:client_id}}"></label><br>
+            <textarea class="config_st" id="config_{{:client_id}}" name="config_{{:client_id}}"></textarea>
+            <textarea class="config_st" id="config_cloud_{{:client_id}}" name="config_cloud_{{:client_id}}"></textarea>
+            <label id="config_cloud_result_{{:client_id}}"></label><br>
+          </td>
+          <td>
+            <input type="button" class="getStatsButton" value="Get Stats" data-sid="{{:client_id}}">
+            <input type="button" class="getApStatsButton" value="Get AP Stats" data-sid="{{:client_id}}">
+            <select id="vap_{{:client_id}}">
+              <option value="2.4G/1">2.4G - 1</option>
+              <option value="2.4G/2">2.4G - 2</option>
+              <option value="2.4G/3">2.4G - 3</option>
+              <option value="2.4G/4">2.4G - 4</option>
+              <option value="5G/1">5G   - 1</option>
+              <option value="5G/2">5G   - 2</option>
+              <option value="5G/3">5G   - 3</option>
+              <option value="5G/4">5G   - 4</option>
+            </select>
+            <br>
+            <label id="stats_up_{{:client_id}}"></label><br>
+            <textarea class="stats_st" id="stats_{{:client_id}}" name="stats_{{:client_id}}"></textarea>
+            <textarea class="stats_st" id="apstats_{{:client_id}}" name="apstats_{{:client_id}}"></textarea>
+          </td>
+        </tr>
+      {{/for}}
+    </script>
+
+    <script>
+      var loginData
+      var sn
+      var keepalive_timer
+      var last_config_count = 0
+      var last_stats_count = 0
+
+      function keepalive() {
+        $.ajax({
+          url: `${window.env.URL_BASE}/api/v1/device/keepalive?sn=${sn}`,
+          headers: { Authorization: 'Bearer ' + loginData.accessToken }
+        })
+      }
+
+      function startKeepalive() {
+        if (!loginData) {
+          alert('please login')
+          return
+        }
+
+        $('#keepalive_start').prop('disabled', true)
+        var keepval = $('#interval').val()
+        keepalive_timer = setInterval(keepalive, keepval * 1000)
+      }
+
+      function stopKeepalive() {
+        clearInterval(keepalive_timer)
+        $('#keepalive_start').prop('disabled', false)
+      }
+
+      function getStats() {
+        // console.log( $(this).data("sid") );
+        $.ajax({
+          url: `${window.env.URL_BASE}/api/v1/device/stats_viewer/` + $(this).data('sid'),
+          headers: { Authorization: 'Bearer ' + loginData.accessToken }
+        })
+      }
+
+      function getApStats() {
+        var sid = $(this).data('sid')
+        console.log($(this).data('sid'))
+        console.log($('#vap_' + sid).val())
+        var vaps = $('#vap_' + sid).val()
+        $.ajax({
+          url: `${window.env.URL_BASE}/api/v1/device/stats_clients/` + $(this).data('sid') + '/' + vaps,
+          headers: { Authorization: 'Bearer ' + loginData.accessToken }
+        })
+      }
+
+      function setCloudConfig() {
+        console.log('setConfig')
+        console.log($(this).data('sid'))
+
+        $('#config_cloud_result_' + $(this).data('sid')).text('')
+
+        var data = JSON.parse($('#config_cloud_' + $(this).data('sid')).val())
+        console.log(data)
+
+        $.ajax({
+          type: 'POST',
+          url: `${window.env.URL_BASE}/api/v1/device/config_cloud/` + $(this).data('sid'),
+          headers: { Authorization: 'Bearer ' + loginData.accessToken },
+          data: data
+        })
+          .done(function (response) {
+            console.log(response)
+          })
+          .fail(function (err) {
+            //Error during request
+            console.log(err)
+          })
+      }
+
+      function startLogin() {
+        console.log('startLogin')
+        sn = Date.now() // 或者用 uuid
+
+        $.ajax({
+          type: 'POST',
+          url: `${window.env.URL_BASE}/api/v1/auth/login`,
+          contentType: 'application/json',
+          data: JSON.stringify({
+            username: $('#username').val(),
+            password: $('#password').val()
+          })
+        })
+          .done(function (response) {
+            console.log(response)
+            loginData = response
+
+            // 補抓 device list
+            $.ajax({
+              url: `${window.env.URL_BASE}/api/v1/device`,
+              headers: { Authorization: 'Bearer ' + loginData.accessToken }
+            }).done(function (deviceRes) {
+              var html = $('#DeviceTemplate').render(deviceRes.devices, true)
+              $('#DeviceTable').html(html)
+              $('.getStatsButton').on('click', getStats)
+              $('.getApStatsButton').on('click', getApStats)
+              $('.setCloudConfigButton').on('click', setCloudConfig)
+            })
+
+            var source = new EventSourcePolyfill(`${window.env.URL_BASE}/api/v1/device/device_data?sn=${sn}`, {
+              headers: {
+                Authorization: 'Bearer ' + loginData.accessToken
+              },
+              heartbeatTimeout: 180000
+            })
+
+            source.addEventListener(
+              'config_viewer',
+              function (e) {
+                console.log(e.data)
+                let data = JSON.parse(e.data)
+                console.log('收到資料：', data)
+                $('#config_up_' + data.deviceID).text(new Date().toLocaleString())
+                $('#config_' + data.deviceID).text(JSON.stringify(data))
+
+                $('#last_config').text(new Date().toLocaleString() + ' by device ' + data.deviceID)
+                last_config_count++
+                $('#last_config_count').text(last_config_count)
+              },
+              false
+            )
+
+            source.addEventListener(
+              'stats_viewer',
+              function (e) {
+                console.log(e.data)
+                let data = JSON.parse(e.data)
+                let stats_data = data.viewer_st
+
+                $('#stats_up_' + data.deviceID).text(new Date().toLocaleString())
+                $('#stats_' + data.deviceID).text(JSON.stringify(stats_data))
+
+                $('#last_stats').text(new Date().toLocaleString() + ' by device ' + data.deviceID)
+                last_stats_count++
+                $('#last_stats_count').text(last_stats_count)
+              },
+              false
+            )
+
+            source.addEventListener(
+              'stats_clients',
+              function (e) {
+                console.log(e.data)
+                let data = JSON.parse(e.data)
+                let stats_data = data.clients_st
+
+                $('#stats_up_' + data.deviceID).text(new Date().toLocaleString())
+                $('#apstats_' + data.deviceID).text(JSON.stringify(stats_data))
+
+                $('#last_stats').text(new Date().toLocaleString() + ' by device ' + data.deviceID)
+                last_stats_count++
+                $('#last_stats_count').text(last_stats_count)
+              },
+              false
+            )
+
+            source.addEventListener(
+              'config_cloud',
+              function (e) {
+                console.log(e.data)
+                let data = JSON.parse(e.data)
+
+                $('#config_cloud_result_' + data.deviceID).text(
+                  new Date().toLocaleString() + ' --- ' + JSON.stringify(data)
+                )
+              },
+              false
+            )
+
+            source.addEventListener(
+              'config_wireless',
+              function (e) {
+                console.log(e.data)
+                // let data = JSON.parse(e.data);
+              },
+              false
+            )
+          })
+          .fail(function (err) {
+            //Error during request
+            console.log(err)
+          })
+      }
+
+      $(document).ready(function () {
+        console.log(
+          'EventSourcePolyfill =',
+          typeof EventSourcePolyfill !== 'undefined' ? EventSourcePolyfill.name : 'undefined'
+        )
+        console.log('EventSource =', typeof EventSource !== 'undefined' ? EventSource.name : 'undefined')
+        console.log('ready!')
+
+        $('#start').on('click', startLogin)
+        $('#keepalive_start').on('click', startKeepalive)
+        $('#keepalive_stop').on('click', stopKeepalive)
+
+        // $("#loadimge").on("click", loadImage);
+      })
+    </script>
+  </head>
+
+  <body>
+    PLANET CloudViewer RD APP v2.0.0 (250402) <br /><br />
+
+    <form>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" value="ivr300@planet.com.tw" /><br /><br />
+      <label for="password">Password:</label>
+      <input type="text" id="password" name="password" value="12345678" /><br /><br />
+      <label for="password">Alive Interval:</label>
+      <input type="text" id="interval" name="interval" value="30" length="10" />&nbsp;Seconds<br /><br />
+      <input type="button" id="start" name="start" value="Start Login" />&nbsp;&nbsp;
+      <input type="button" id="keepalive_start" name="keepalive_start" value="Start Keepalive" />&nbsp;&nbsp;
+      <input type="button" id="keepalive_stop" name="keepalive_stop" value="Stop Keepalive" />&nbsp;&nbsp; <br /><br />
+      <label>Last config update:</label><label id="last_config"></label>,&nbsp;<label id="last_config_count"></label
+      ><br />
+      <label>Last stats update:</label><label id="last_stats"></label>,&nbsp;<label id="last_stats_count"></label><br />
+      <br />
+    </form>
+    <hr />
+    <table id="DeviceTable" class="device-table"></table>
+  </body>
+</html>
