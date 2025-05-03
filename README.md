@@ -18,7 +18,7 @@
 我自己是 Windows 下的 Linux (wsl 2, ubuntu 22.04, node:20) + Docker Compose(emqx, mysql, redis)
 
 ```bash
-$ git clone http://192.168.2.163:3333/SW/Cloud-NMS_Fastify.git my-fastify-app
+$ git clone http://<ip>:<port>/<group>/<project-name>.git my-fastify-app
 $ cd my-fastify-app
 $ vi .env # 參考 .env.example 填入自己的環境變數
 $ docker compose -f dev-compose.yml up -d # 運行周邊服務: DataBase 與 MQTT Broker
@@ -34,7 +34,7 @@ $ npm run dev # 運行主程式服務
 
 [Test API by Supertest](#test_api_by_supertest)
 
-[部屬運行於 Test Server (192.168.2.163)](#test_server_deploy)
+[部屬運行於 Test Server](#test_server_deploy)
 
 ### prettier_and_eslint
 
@@ -74,8 +74,8 @@ $ npm run lint:fix
 
 ```bash
 EX: http://localhost:9090/internal
- > 前端串接Cloud-NMS_API請參考: ${DOMAIN_URL}/docs
- > CloudViewerPro_API(舊版遷移)請參考: ${DOMAIN_URL}/legacy
+ > 前端串接<project-name>_API請參考: ${DOMAIN_URL}/docs
+ > <prj-name>_API(舊版遷移)請參考: ${DOMAIN_URL}/legacy
 ```
 
 ### test_api_by_supertest
@@ -88,7 +88,7 @@ $ node --test test/base1.js
 
 ### test_server_deploy
 
-以下為節錄RD_Server(192.168.2.163/Cloud-NMS Test Server/Local Version)位置為`/ssd/coji/eznms/docker-lemp-stack/docker`的`docker-compose.yml`的部分內容作為紀錄參考
+以下為參考
 
 ```bash
   my-fastify-app:
@@ -114,17 +114,17 @@ $ node --test test/base1.js
 
 ```bash
 # 初次克隆專案
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ git clone http://192.168.2.163:3333/SW/Cloud-NMS_Fastify.git my-fastify-app
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ cd my-fastify-app
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker/my-fastify-app$ vi .env
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker/my-fastify-app$ cd ..
+$ git clone http://<ip>:<port>/<group>/<project-name>.git my-fastify-app
+$ cd my-fastify-app
+$ vi .env
+$ cd ..
 # package.json有更新時才須重build
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ docker compose build my-fastify-app
+$ docker compose build my-fastify-app
 # 平時只有改Code的話就restart就好
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ docker compose down my-fastify-app
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ docker compose up my-fastify-app -d
+$ docker compose down my-fastify-app
+$ docker compose up my-fastify-app -d
 # 查看LOG
-kate@RDMSVN:/ssd/coji/eznms/docker-lemp-stack/docker$ docker logs nmsviewer.planet.local_my-fastify-app -f
+$ docker logs nmsviewer.planet.local_my-fastify-app -f
 ```
 
 ## [Source] Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
