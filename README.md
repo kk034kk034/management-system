@@ -1,4 +1,4 @@
-# Cloud-NMS - API Service
+# API Service
 
 以 Fastify 框架構建 API 服務，使用 ESM 模式，模組架構清晰、開發風格統一。專案採用 Prettier + ESLint 格式規範，並以 plugins/models/routes 等功能分類目錄組織專案。支援 Swagger API 文件、多層 RBAC 權限、MQTT 裝置管理與資料遷移流程，適合作為雲端管理平台後端基礎。
 
@@ -12,7 +12,6 @@
 - `scripts/`：包含資料遷移與默認資料寫入等工具腳本
 - `test/`：測試程式
 - `logs/`：需要存下追蹤之各類日誌
-- `public_rd/`：前人做的簡易後台，用於確認假裝置通訊內容
 
 ## [Deploy] 在自己的電腦裡起一個開發環境
 
