@@ -28,43 +28,12 @@ $ npm run dev # 運行主程式服務
 
 ## Usage
 
-[Prettier & ESLint 的安裝至使用的步驟](#prettier_and_eslint)
-
 [Openapi Docs by Swagger](#openapi_docs_by_swagger)
 
 [Test API by Supertest](#test_api_by_supertest)
 
 [部屬運行於 Test Server](#test_server_deploy)
 
-### prettier_and_eslint
-
-1. 安裝 prettier and eslint
-
-```bash
-$ npm install --save-dev prettier eslint eslint-plugin-prettier eslint-config-prettier
-$ npx eslint --init
-```
-
-2. 新增.eslintrc.json (請參考本專案內之 .eslintrc.json 內容)
-
-3. 新增.prettierrc (請參考本專案內之 .prettierrc 內容)
-
-4. 修改 package.json (新增以下三行)
-
-```json
-"scripts": {
-  "lint": "eslint .",
-  "lint:fix": "eslint . --fix",
-  "format": "prettier --write ."
-}
-```
-
-5. 完成 (以下為使用/執行 Auto-Format 和 Lint-Check)
-
-```bash
-$ npm run format
-$ npm run lint:fix
-```
 
 ### openapi_docs_by_swagger
 
