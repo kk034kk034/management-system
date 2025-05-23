@@ -1,14 +1,31 @@
+#################################
+# $ docker load -i <image-tar>  #
+# $ sudo nano /etc/hosts        #
+#  127.0.0.1 traefik.localhost  #
+#  127.0.0.1 admin.localhost    #
+#  127.0.0.1 nms.localhost      #
+#  127.0.0.1 api.localhost      #
+#################################
 services:
-  mysql:
-    image: mysql:5.7 # Compatible with older applications, suitable for older systems, lower memory requirements
-    container_name: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+      - --api.insecure=true # dev
     ports:
-      - '3306:3306'
+      - '80:80'
+      - '8080:8080' # Dashboard for dev
     volumes:
-      - ./mysql/data:/var/lib/mysql
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.localhost`)'
+      - 'traefik.http.routers.traefik.service=api@internal'
+      - 'traefik.http.routers.traefik.entrypoints=web'
     networks:
       - internal_network
 
@@ -21,10 +38,11 @@ services:
       - '8883:8883' # MQTT over TLS
       - '8083:8083' # WebSocket
       - '8084:8084' # WSS
-      - '18083:18083' # Dashboard, first-login account is admin/public
+      - '18083:18083' # Dashboard; first-login account is admin/public; Client authorization > Built-in database > All users > Allow Sub $SYS/# first.
     volumes:
       - ./emqx/data:/opt/emqx/data
       - ./emqx/log:/opt/emqx/log
+      - ./emqx/certs:/opt/emqx/etc/certs
     networks:
       - internal_network
 
@@ -39,6 +57,130 @@ services:
     networks:
       - internal_network
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongodb/data:/data/db
+    networks:
+      - internal_network
+
+  mysql:
+    image: mysql:5.7 # Compatible with older applications, suitable for older systems, lower memory requirements
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - internal_network
+
+  fastify:
+    image: docker-fastify:v1.0.0
+    container_name: fastify
+    volumes:
+      - ./fastify_deploy/logs:/app/logs  # logs for filebeat
+    #ports:
+    #  - '9090:9090'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.api.rule=Host(`api.localhost`)'
+      - 'traefik.http.routers.api.entrypoints=web'
+      - 'traefik.http.services.fastify-svc.loadbalancer.server.port=9090'
+    user: 1000:1000
+    env_file:
+      - ./fastify_deploy/.env
+    networks:
+      - internal_network
+    depends_on:
+      - emqx
+      - redis
+      - mongodb
+      - mysql
+
+  vuexy:
+    image: docker-vuexy:v1.0.0
+    container_name: vuexy
+    #ports:
+    #  - '8085:3003'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.nms.rule=Host(`nms.localhost`)'
+      - 'traefik.http.routers.nms.entrypoints=web'
+      - 'traefik.http.routers.nmsapi.rule=Host(`nms.localhost`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.nmsapi.entrypoints=web'
+      - 'traefik.http.routers.nmsapi.service=fastify-svc'
+    networks:
+      - internal_network
+
+  vuetify:
+    image: docker-backstage:v1.0.0
+    container_name: backstage
+    #ports:
+    #  - '8086:5173'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.backstage.rule=Host(`admin.localhost`)'
+      - 'traefik.http.routers.backstage.entrypoints=web'
+      - 'traefik.http.routers.adminapi.rule=Host(`admin.localhost`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.adminapi.entrypoints=web'
+      - 'traefik.http.routers.adminapi.service=fastify-svc'
+    networks:
+      - internal_network
+      
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # limit heap
+    ports:
+      - "9200:9200"
+    networks:
+      - internal_network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.15
+    container_name: logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5044:5044"
+    networks:
+      - internal_network
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.15
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - internal_network
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.17.15
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./fastify_deploy/logs:/logs:ro
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    depends_on:
+      - logstash
+    networks:
+      - internal_network
+
 networks:
   internal_network:
     driver: bridge
+    name: docker_internal_network
