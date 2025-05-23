@@ -30,12 +30,6 @@ const migrateDatabase = async () => {
   }
 }
 
-// Add static file support
-fastify.register(fastifyStatic, {
-  root: path.join(import.meta.dirname, 'public_rd'), // Put HTML Here.
-  prefix: '/' // [LINK] http://localhost:9090/check_mqtt.html
-})
-
 // Automatically load all plugins in `plugins/` directory
 fastify.register(AutoLoad, {
   dir: path.join(import.meta.dirname, 'plugins')
