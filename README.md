@@ -26,38 +26,7 @@ $ npm run dev # 運行主程式服務
 # 若有更動資料格式想要砍掉重練(等於說想從 mydb 做 migrate_data 至 mydb_dev)，則需在 .env 裡的 DB_MIGRATE 設為 true 後執行主程式。
 ```
 
-## Usage
-
-[Openapi Docs by Swagger](#openapi_docs_by_swagger)
-
-[Test API by Supertest](#test_api_by_supertest)
-
-[部屬運行於 Test Server](#test_server_deploy)
-
-
-### openapi_docs_by_swagger
-
-1. routes/內已切分版本，且每隻API所含之例如{ schema: swagger.signupEmail }將表示已完成API_Docs內容，並放置於swagger/底下。
-
-2. 已讓專案支援多份Swagger
-
-```bash
-EX: http://localhost:9090/internal
- > 前端串接<project-name>_API請參考: ${DOMAIN_URL}/docs
- > <prj-name>_API(舊版遷移)請參考: ${DOMAIN_URL}/legacy
-```
-
-### test_api_by_supertest
-
-1. 執行測試 ( 詳情請見 test/README.md )
-
-```bash
-$ node --test test/base1.js
-```
-
-### test_server_deploy
-
-以下為參考
+## [Deploy] 測試環境，整合前後端
 
 ```bash
   my-fastify-app:
@@ -87,11 +56,14 @@ $ git clone http://<ip>:<port>/<group>/<project-name>.git my-fastify-app
 $ cd my-fastify-app
 $ vi .env
 $ cd ..
+
 # package.json有更新時才須重build
 $ docker compose build my-fastify-app
+
 # 平時只有改Code的話就restart就好
 $ docker compose down my-fastify-app
 $ docker compose up my-fastify-app -d
+
 # 查看LOG
 $ docker logs nmsviewer.planet.local_my-fastify-app -f
 ```
