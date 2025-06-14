@@ -1,5 +1,7 @@
 # API Service
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/kk034kk034/fastify-rbac?utm_source=oss&utm_medium=github&utm_campaign=kk034kk034%2Ffastify-rbac&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 以 Fastify 框架構建 API 服務，使用 ESM 模式，模組架構清晰、開發風格統一。專案採用 Prettier + ESLint 格式規範，並以 plugins/models/routes 等功能分類目錄組織專案。支援 Swagger API 文件、多層 RBAC 權限、MQTT 裝置管理與資料遷移流程，適合作為雲端管理平台後端基礎。
 
 本專案採模組化架構(低耦合、高內聚)，依據功能劃分目錄如下：
