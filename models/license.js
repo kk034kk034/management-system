@@ -28,3 +28,6 @@ const License = sequelize.define(
 )
 
 export default License
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

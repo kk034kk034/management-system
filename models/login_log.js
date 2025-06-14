@@ -34,3 +34,6 @@ const LoginLog = sequelize.define(
 )
 
 export default LoginLog
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

@@ -41,3 +41,6 @@ async function passwordResetPlugin(fastify) {
 }
 
 export default FastifyPlugin(passwordResetPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

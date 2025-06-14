@@ -21,3 +21,6 @@ async function passwordPlugin(fastify) {
 
 export { createPassword, verifyPassword }
 export default FastifyPlugin(passwordPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

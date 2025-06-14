@@ -42,3 +42,6 @@ const RoleChangeLog = sequelize.define(
 )
 
 export default RoleChangeLog
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

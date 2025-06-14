@@ -88,3 +88,6 @@ async function rbacPlugin(fastify) {
 }
 
 export default FastifyPlugin(rbacPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

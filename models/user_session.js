@@ -42,3 +42,6 @@ const UserSession = sequelize.define(
 )
 
 export default UserSession
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

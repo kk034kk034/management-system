@@ -40,3 +40,6 @@ async function mailerPlugin(fastify) {
 }
 
 export default FastifyPlugin(mailerPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

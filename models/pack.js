@@ -21,3 +21,6 @@ const Pack = sequelize.define(
 )
 
 export default Pack
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

@@ -56,3 +56,6 @@ async function swaggerInternalPlugin(fastify) {
 
 export { internalInstance }
 export default FastifyPlugin(swaggerInternalPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

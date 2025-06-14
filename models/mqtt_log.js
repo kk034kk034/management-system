@@ -38,3 +38,6 @@ const MqttLog = sequelize.define(
 )
 
 export default MqttLog
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

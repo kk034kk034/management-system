@@ -24,3 +24,6 @@ export const getDeviceFeatures = {
     }
   }
 }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

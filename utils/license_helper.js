@@ -11,3 +11,6 @@ export function generateLicenseKey() {
   }
   return key
 }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

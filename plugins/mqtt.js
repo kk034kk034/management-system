@@ -135,3 +135,6 @@ async function mqttConnector(fastify) {
 }
 
 export default FastifyPlugin(mqttConnector)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

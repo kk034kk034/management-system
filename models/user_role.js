@@ -41,3 +41,6 @@ const UserRole = sequelize.define(
 )
 
 export default UserRole
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

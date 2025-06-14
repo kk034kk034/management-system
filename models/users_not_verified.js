@@ -39,3 +39,6 @@ const UsersNotVerified = sequelize.define(
 )
 
 export default UsersNotVerified
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

@@ -13,3 +13,6 @@ const content = `window.env = ${JSON.stringify(config, null, 2)};`
 
 fs.writeFileSync('./public_rd/env.js', content)
 console.log('✅ env.js generated')
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

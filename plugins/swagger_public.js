@@ -56,3 +56,6 @@ async function swaggerV1Plugin(fastify) {
 
 export { v1Instance }
 export default FastifyPlugin(swaggerV1Plugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

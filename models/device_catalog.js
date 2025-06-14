@@ -34,3 +34,6 @@ const DeviceCatalog = sequelize.define(
 )
 
 export default DeviceCatalog
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

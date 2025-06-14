@@ -65,3 +65,6 @@ async function registerPlugin(fastify) {
 }
 
 export default FastifyPlugin(registerPlugin)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

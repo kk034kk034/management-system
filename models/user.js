@@ -47,3 +47,6 @@ const User = sequelize.define(
 )
 
 export default User
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

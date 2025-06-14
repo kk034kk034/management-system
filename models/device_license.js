@@ -28,3 +28,6 @@ const DeviceLicense = sequelize.define(
 )
 
 export default DeviceLicense
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

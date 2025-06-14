@@ -35,3 +35,6 @@ const Organization = sequelize.define(
 )
 
 export default Organization
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

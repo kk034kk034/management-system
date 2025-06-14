@@ -56,3 +56,6 @@ async function dbConnector(fastify) {
 
 export { sequelize }
 export default FastifyPlugin(dbConnector)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

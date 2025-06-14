@@ -44,3 +44,6 @@ export function convertSNMPTypeToCloudType(snmp_type) {
   }
   return map[snmp_type] || 0 // Convert others to 0
 }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

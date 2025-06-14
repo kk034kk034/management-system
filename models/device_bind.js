@@ -92,3 +92,6 @@ const DeviceBind = sequelize.define(
 )
 
 export default DeviceBind
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

@@ -69,3 +69,6 @@ export const addDeviceCatalog = {
     }
   }
 }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

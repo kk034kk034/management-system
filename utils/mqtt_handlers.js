@@ -143,3 +143,6 @@ export async function handleUnbind(fastify, deviceID, payload) {
   bind.destroy()
   fastify.log.info(`🗑️ Unbound: ${client_id}`)
 }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

@@ -59,3 +59,6 @@ start()
 
 // Allow tests to import fastify
 export default fastify
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

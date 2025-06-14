@@ -27,3 +27,6 @@ const Site = sequelize.define(
 )
 
 export default Site
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

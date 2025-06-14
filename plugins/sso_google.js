@@ -82,3 +82,6 @@ async function registerUserFromSSO(fastify, email, username) {
 }
 
 export default FastifyPlugin(googleAuth)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

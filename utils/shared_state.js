@@ -22,3 +22,6 @@ export const clients = []
 
 // 挂起的请求
 export const pendingRequests = {} // deviceID -> { userId, sn }
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

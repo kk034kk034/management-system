@@ -46,3 +46,6 @@ async function jwtAuth(fastify) {
 }
 
 export default FastifyPlugin(jwtAuth)
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit

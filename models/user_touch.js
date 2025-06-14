@@ -29,3 +29,6 @@ const UserTouch = sequelize.define(
 )
 
 export default UserTouch
+// dummy for CodeRabbit
+
+// dummy for CodeRabbit
